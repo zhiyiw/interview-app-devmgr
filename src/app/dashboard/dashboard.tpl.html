@@ -1,27 +1,31 @@
-<h4>Devices</h4>
-
+<span id="notification">You can edit the owner of the device by double click the name.</span>
+<div ng-repeat="panelData in dataTable">
+<h4>{{tablename[$index]}}</h4>
 <table class="table table-bordered table-condensed table-striped table-hover">
     <thead>
     <tr>
         <th class="col-md-2">IP</th>
         <th class="col-md-2">Owner</th>
-        <th class="col-md-2">CPU</th>
-        <th class="col-md-2">Mem</th>
-        <th class="col-md-2">TX</th>
-        <th class="col-md-2">RX</th>
+        <th class="col-md-2" ng-if="panelData[$index].cpuPct">CPU</th>
+        <th class="col-md-2" ng-if="panelData[$index].memBytes">Mem</th>
+        <th class="col-md-2" ng-if="panelData[$index].networkTxBytes">TX</th>
+        <th class="col-md-2" ng-if="panelData[$index].networkRxBytes">RX</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="device in devices">
+    <tr ng-repeat="device in panelData">
+    
         <td>{{ device.ip}}</td>
-        <td>{{ device.owner}}</td>
-        <td>{{ device.cpuPct}}%</td>
-        <td>{{ device.memBytes | bytesToStr }}</td>
-        <td>{{ device.networkRxBytes | bytesToStr }}</td>
-        <td>{{ device.networkTxBytes | bytesToStr }}</td>
+        <td data-value="owner"><span ng-hide="device.editing" ng-dblclick="editItem(device)">{{ device.owner}}</span><input class="edit-owner" ng-show="device.editing" ng-model="device.owner" ng-blur="doneEditing(device)" autofocus /></td>
+        <td ng-if="device.cpuPct">{{ device.cpuPct}}%</td>
+        <td ng-if="device.memBytes">{{ device.memBytes | bytesToStr }}</td>
+        <td ng-if="device.networkTxBytes">{{ device.networkTxBytes | bytesToStr }}</td>
+        <td ng-if="device.networkRxBytes">{{ device.networkRxBytes | bytesToStr }}</td>
     </tr>
-    <tr ng-show="!devices.length">
+    <tr ng-show="!panelData.length">
         <td colspan="6">No device info available</td>
     </tr>
     </tbody>
 </table>
+</div>
+

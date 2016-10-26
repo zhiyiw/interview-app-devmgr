@@ -1,12 +1,4 @@
-angular.module('resources.devices', [])
-
-.factory('Devices', [function () {
-
-  return {
-    all: function() {
-
-      // TODO: hook this up to a db. Ideally with the stats constantly changing.
-      return [
+var deviceData = [
         {
           ip: '150.1.1.1',
           owner: 'Jack Brown',
@@ -64,7 +56,42 @@ angular.module('resources.devices', [])
           networkTxBytes: 20 * 1024 * 1024
         }
       ];
+var topFiveDevices = function(data, prop) {
+  var result = data.map(function(i){
+    var obj = {
+      ip: i.ip,
+      owner: i.owner,
+      editing: false,
+    }
+    obj[prop] = i[prop];
+    return obj;
+  }).sort(function(a,b){
+    return b[prop] - a[prop] ;
+  }).slice(0, 5);
+  return result;
+}
 
+angular.module('resources.devices', [])
+
+.factory('Devices', [function () {
+
+  return {
+    all: function() {
+
+      // TODO: hook this up to a db. Ideally with the stats constantly changing.
+      return deviceData;
+    },
+    cputop: function() {  
+      return topFiveDevices(deviceData, 'cpuPct');
+    },
+    memtop: function() {  
+      return topFiveDevices(deviceData, 'memBytes');
+    },
+    txtop: function() {  
+      return topFiveDevices(deviceData, 'networkTxBytes');
+    },
+    rxtop: function() {  
+      return topFiveDevices(deviceData, 'networkRxBytes');
     }
   };
 
